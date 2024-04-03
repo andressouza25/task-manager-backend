@@ -7,7 +7,7 @@ const TaskSchema = Schema({
         type: String,
         require: true,
     },
-    isComplited: {
+    isCompleted: {
         type: Boolean,
         default: false,
     },
