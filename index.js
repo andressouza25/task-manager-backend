@@ -12,7 +12,7 @@ app.use(express.json());
 
 connectToDatabase();
 
-// Buscando as TASKS do DB
+// Rota: Buscar as TASKS do DB
 app.get("/tasks", async (req, res) => {
     try {
         const tasks = await TaskModel.find({});
@@ -22,12 +22,29 @@ app.get("/tasks", async (req, res) => {
     }
 });
 
-// Criando uma TASK nova
+// Rota: Criar TASK nova
 app.post("/tasks", async (req, res) => {
     try {
         const newTask = new TaskModel(req.body);
         await newTask.save();
         res.status(201).send(newTask);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+// Rota: Deletar task
+app.delete("/tasks/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id;
+
+        const taskToDelete = await TaskModel.findById(taskId);
+
+        if (!taskToDelete) {
+            res.status(500).send("Tarefa não encontrada");
+        }
+        const deletedTask = await TaskModel.findByIdAndDelete(taskId);
+        res.status(200).send(deletedTask);
     } catch (error) {
         res.status(500).send(error.message);
     }
